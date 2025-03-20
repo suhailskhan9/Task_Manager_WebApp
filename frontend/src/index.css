@@ -1,0 +1,13 @@
+@import "tailwindcss";
+body{
+    font-family: Poppins, sans-serif;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

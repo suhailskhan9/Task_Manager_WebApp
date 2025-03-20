@@ -1,0 +1,151 @@
+.main-container{
+    display: flex;
+    width: 100%;
+    max-width: 64rem;
+}
+
+.left-section{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem; 
+}
+
+.left-section img{
+    width: 75%;
+    height: auto;
+}
+
+
+.right-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    padding: 3rem;
+    border-radius: 4rem;
+    border: 1px solid rgba(146, 147, 147, 0.881);
+}
+.switch-btn {
+    flex: 1; 
+  }
+  
+  .switch-btn:first-child {
+    align-self: flex-start; 
+  }
+.switch-btn{
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tab-active {
+    font-size: 1.625rem; 
+    font-weight: 600; 
+    color: #329C89; 
+    border-bottom: 2px solid #329C89; 
+}
+
+
+.tab-inactive {
+    font-size: 1.625rem; 
+    color: #9ca3af; 
+  }
+
+  .tab-inactive:hover {
+    color: #329C89; 
+  }
+
+.heading{
+    font-size: 1.32rem; 
+    font-weight: bold; 
+    margin-top: 2rem;
+    color: #1f2937; 
+}
+
+.sub-heading {
+    color: #6b7280;
+    font-size: 0.625rem; 
+    margin-bottom: 2rem; 
+  }
+
+ form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 80%;
+    border-top: 1px solid black;
+ }
+
+  .input-field {
+    width: 100%;
+    padding: 0.75rem; 
+    border: 1px solid #d1d5db; 
+    border-radius: 0.5rem; 
+  }
+
+  .input-field:focus {
+    border-color: #329C89; 
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  }
+.full-name-container{
+  margin-top: 2rem;
+  margin-bottom: 1.9rem;
+}
+.email-container{
+    margin-bottom: 2rem;
+}
+.password-container{
+    margin-bottom: 0.875rem;
+}
+  .remember-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.25rem; 
+  }
+  
+
+  .checkbox {
+    margin-right: 0.25rem; 
+    accent-color: #329C89; 
+  }
+  
+
+  .login-submit-btn , .sign-up-submit-btn{
+    width: 100%;
+    background-color: #329C89; 
+    color: white;
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+    font-size: 1.125rem; 
+    font-weight: 600; 
+    margin-bottom: 2.5rem;
+  }
+
+  
+  .login-submit-btn:hover , .sign-up-submit-btn:hover{
+    background-color: white;
+    color: #329C89;
+    outline: 1px solid #329C89;
+  }
+
+  .msg-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+  .err-msg,  .success-msg{
+    font-family: Roboto, sans-serif;
+    font-size: 0.9rem;
+  }
+    .err-msg{
+    color: #F65B2A;
+    
+  }
+
+  .success-msg{
+    color: #4F8A10;
+  }
