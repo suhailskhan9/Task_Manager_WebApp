@@ -1,6 +1,6 @@
 import { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import '../styles/Loginpage.css'
+import '../styles/LoginPage.css'
 import errImg from '../assets/errImg.png'
 import loginPageImg from '../assets/illustration.png'
 import EmailContainer from './EmailContainer';
@@ -36,7 +36,7 @@ function LoginPage() {
         const requestBody = loginActive
         ? { email, password }
         : { fullName, email, password };
-    const response = await fetch(`http://127.0.0.1:8000${endpoint}`, {
+    const response = await fetch(`https://task-manager-webapp-yvce.onrender.com${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody)
