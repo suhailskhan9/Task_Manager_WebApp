@@ -11,7 +11,7 @@ const TaskModal = ({setTasks, created_by, status, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-        const response = await axios.post("http://127.0.0.1:8000/add_task", task);
+        const response = await axios.post("https://task-manager-webapp-8z5u.onrender.com/add_task", task);
       setTasks(prevTasks => [...prevTasks, response.data]);
       onClose(); 
     } catch (error) {
