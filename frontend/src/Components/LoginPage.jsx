@@ -16,8 +16,8 @@ function LoginPage() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
-        if (token) {
+        const access_token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+        if (access_token) {
           navigate("/dashboard"); 
         }
       }, []);
@@ -52,10 +52,10 @@ function LoginPage() {
     }
     else if (response.ok && endpoint === '/login'){
         if (rememberMe) {
-            localStorage.setItem("access_token", result.token);
+            localStorage.setItem("access_token", result.access_token);
         }
         else {
-            sessionStorage.setItem("access_token", result.token); 
+            sessionStorage.setItem("access_token", result.access_token); 
         }
             
             navigate("/dashboard");
