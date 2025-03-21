@@ -3,22 +3,43 @@ import axios from "axios";
 import "../styles/TaskModal.css" 
 
 const TaskModal = ({setTasks, created_by, status, onClose }) => {
-  const [task, setTask] = useState({created_by:created_by, title: "", description: "", status:status });
-
+   const [task, setTask] = useState({
+    title: "",
+    description: "",
+    status: status,
+  });
   const handleChange = (e) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
 
+
   const handleSubmit = async () => {
     try {
-        const response = await axios.post("https://task-manager-webapp-8z5u.onrender.com/add_task", task);
+      const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token"); // Retrieve token from localStorage (or state)
+      
+      if (!token) {
+        console.error("No token found, user must log in first.");
+        return;
+      }
+  
+      const response = await axios.post(
+        "http://127.0.0.1:8000/add_task",
+        task,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Include token in request headers
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
       setTasks(prevTasks => [...prevTasks, response.data]);
       onClose(); 
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
-
+  
   return (
     <div className="modal-overlay">
       <div className="modal-content">
