@@ -15,7 +15,7 @@ const TaskModal = ({setTasks, created_by, status, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token"); // Retrieve token from localStorage (or state)
+      const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token"); 
       
       if (!token) {
         console.error("No token found, user must log in first.");
