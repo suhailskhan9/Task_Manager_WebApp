@@ -33,7 +33,7 @@ function Dashboard() {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/tasks") 
+    axios.get("https://task-manager-webapp-8z5u.onrender.com/tasks") 
       .then(response => {
         setTasks(response.data);
       })
