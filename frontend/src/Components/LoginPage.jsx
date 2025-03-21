@@ -36,7 +36,7 @@ function LoginPage() {
         const requestBody = loginActive
         ? { email, password }
         : { fullName, email, password };
-    const response = await fetch(`https://task-manager-webapp-yvce.onrender.com${endpoint}`, {
+    const response = await fetch(`https://task-manager-webapp-8z5u.onrender.com${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody)
