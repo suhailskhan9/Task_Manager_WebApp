@@ -1,12 +1,12 @@
 from pydantic import BaseModel, EmailStr
 
-# Signup schema (requires fullName)
+# Signup schema
 class UserCreate(BaseModel):
-    full_name: str  # Use snake_case for Pydantic model fields
+    full_name: str  
     email: EmailStr
     password: str
 
-# Login schema (only email & password)
+# Login schema 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
@@ -19,12 +19,11 @@ class TaskCreate(BaseModel):
     status: str
 
     class Config:
-        orm_mode = True  # Allows conversion from SQLAlchemy ORM models
+        orm_mode = True  
 
 
-# ✅ Task response schema
 class TaskResponse(TaskCreate):
-    id: int  # Include `id` for response
+    id: int  
 
     class Config:
         orm_mode = True
