@@ -99,5 +99,5 @@ async def add_task(task_data: TaskCreate, current_user: User = Depends(get_curre
     return new_task
 
 @app.get("/tasks", response_model=List[TaskResponse])
-async def get_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def get_tasks(db: Session = Depends(get_db)):
     return db.query(Task).all()
