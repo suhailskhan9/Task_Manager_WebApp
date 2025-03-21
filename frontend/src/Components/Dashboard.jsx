@@ -49,6 +49,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("access_token"); 
+    sessionStorage.removeItem("access_token");
     navigate("/login"); 
   };
   return (

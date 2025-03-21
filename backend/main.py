@@ -4,20 +4,20 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
 from models import User, Task
-from schemas import UserLogin, UserCreate, TaskCreate,TaskResponse
-from passlib.context import CryptContext
+from schemas import UserLogin, UserCreate, TaskCreate, TaskResponse
+from passlib.hash import bcrypt
 from typing import List
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,28 +26,42 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"],  
 )
+
 Base.metadata.create_all(bind=engine)
 
-class formData(BaseModel):
-    fullName: str
-    email: str
-    password: str
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# Hash Password
 def hash_password(password: str):
-    return pwd_context.hash(password)
+    return bcrypt.hash(password)
 
-# Verify Password
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.verify(plain_password, hashed_password)
 
 
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_email: str = payload.get("sub")
+        if user_email is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        user = db.query(User).filter(User.email == user_email).first()
+        if user is None:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        return user
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 @app.post("/login")
-async def login(user_data: UserLogin, db:Session = Depends(get_db)):
+async def login(user_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == user_data.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -55,14 +69,12 @@ async def login(user_data: UserLogin, db:Session = Depends(get_db)):
     if not verify_password(user_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    
     access_token = create_access_token(data={"sub": user.email}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     
-    return {"token": access_token}
-
+    return {"access_token": access_token}  
 
 @app.post("/signup")
-async def signup(user_data: UserCreate, db:Session = Depends(get_db)):
+async def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -78,8 +90,8 @@ async def signup(user_data: UserCreate, db:Session = Depends(get_db)):
 
 
 @app.post("/add_task")
-async def addTask(task_data: TaskCreate, db:Session = Depends(get_db)):
-    new_task = Task(created_by=task_data.created_by, title=task_data.title, description=task_data.description, status=task_data.status)
+async def add_task(task_data: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    new_task = Task(created_by=current_user.email, title=task_data.title, description=task_data.description, status=task_data.status)
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
@@ -87,16 +99,5 @@ async def addTask(task_data: TaskCreate, db:Session = Depends(get_db)):
     return new_task
 
 @app.get("/tasks", response_model=List[TaskResponse])
-async def get_tasks(db: Session = Depends(get_db)):
-    return db.query(Task).all()
-
-
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+async def get_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return db.query(Task).filter(Task.created_by == current_user.email).all()
