@@ -48,12 +48,10 @@ def verify_password(plain_password, hashed_password):
 
 @app.post("/login")
 async def login(user_data: UserLogin, db:Session = Depends(get_db)):
-    # Fetch user by email
     user = db.query(User).filter(User.email == user_data.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Verify Password
     if not verify_password(user_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
@@ -65,15 +63,12 @@ async def login(user_data: UserLogin, db:Session = Depends(get_db)):
 
 @app.post("/signup")
 async def signup(user_data: UserCreate, db:Session = Depends(get_db)):
-     # Check if user already exists
     existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Hash Password
     hashed_password = hash_password(user_data.password)
 
-    # Create new user
     new_user = User(full_name=user_data.fullName, email=user_data.email, password=hashed_password)
     db.add(new_user)
     db.commit()
@@ -84,7 +79,6 @@ async def signup(user_data: UserCreate, db:Session = Depends(get_db)):
 
 @app.post("/add_task")
 async def addTask(task_data: TaskCreate, db:Session = Depends(get_db)):
-    # Create new user
     new_task = Task(created_by=task_data.created_by, title=task_data.title, description=task_data.description, status=task_data.status)
     db.add(new_task)
     db.commit()
