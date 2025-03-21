@@ -146,7 +146,7 @@ function Dashboard() {
       </main>
 
       {/* Modal */}
-      {isModalOpen && <TaskModal setTasks={setTasks} created_by = {"Suhail"} status={taskStatus} onClose={closeModal} />}
+      {isModalOpen && <TaskModal setTasks={setTasks} status={taskStatus} onClose={closeModal} />}
     </div>
   );
 };
